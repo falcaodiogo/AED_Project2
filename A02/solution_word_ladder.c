@@ -235,21 +235,24 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
   node = hash_table->heads[i]; // Set the node to the head of the hash table
   while(node != NULL) // Loop through the hash table
   { 
-    if(strcmp(node->word, word) == 0){  // If the word is found
+    if(strcmp(node->word, word) == 0) // If the word is found
+    { 
       return node;  // Return the node
     }
     node = node->next;  // Set the node to the next node
   }
-  if(insert_if_not_found == 1){ // If the word is not found
+  if(insert_if_not_found == 1) // If the word is not found
+  { 
     node = allocate_hash_table_node();  // Allocate a new node
-    node->word = strdup(word);  // Set the word to the node
     node->next = hash_table->heads[i];  // Set the next node to the head of the hash table
     hash_table->heads[i] = node;  // Set the head of the hash table to the node
     hash_table->number_of_entries++;  // Increment the number of words
+    
     if(hash_table->number_of_entries > hash_table->hash_table_size){  // If the number of words is greater than the size of the hash table
       hash_table_grow(hash_table);  // Grow the hash table
     }
   }
+  // ---------------------------------------------------------------
   return node;
 }
 
@@ -265,6 +268,17 @@ static hash_table_node_t *find_representative(hash_table_node_t *node)
   //
   // complete this
   //
+  // ---------------------------------------------------------------
+  representative = node;  // Set the representative to the node
+  while(representative->representative != NULL){ 
+    representative = representative->representative;  // Set the representative to the next representative
+  }
+  while(node->representative != NULL){ 
+    next_node = node->representative;  // Set the n to thext node to the next node
+    node->representative = representative;  // Set the representative to the representative
+    node = next_node;  // Set the node to the next node
+  }
+  // ---------------------------------------------------------------
   return representative;
 }
 
@@ -277,6 +291,25 @@ static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char
   //
   // complete this
   //
+  // ---------------------------------------------------------------
+  if(to == NULL){  // If the word is not found
+    printf("add_edge: no word found"); 
+    exit(1);
+  }
+  from_representative = find_representative(from);  // Set the from representative to the representative of the from node
+  to_representative = find_representative(to);  // Set the to representative to the representative of the to node
+
+  if(from_representative == to_representative) // If the from representative is the same as the to representative
+  {  
+    exit(1);
+  }
+
+  link = allocate_adjacency_node();  // Allocate a new adjacency node
+  link->vertex = to_representative;  // Set the node to the to representative
+  link->next = from_representative->head;  // Set the next node to the head of the from representative
+  from_representative->head = link;  // Set the head of the from representative to the link
+  to_representative->representative = from_representative;  // Set the representative of the to representative to the from representative
+  // ---------------------------------------------------------------
 }
 
 
