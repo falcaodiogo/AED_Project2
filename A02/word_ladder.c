@@ -4,7 +4,8 @@
 // Second practical assignement (speed run)
 //
 // Place your student numbers and names here
-//   N.Mec. XXXXXX  Name: XXXXXXX
+//   N.Mec. 108712  Name: Diogo Falcão
+//   N.Mec. 108840  Name: José Gameiro
 //
 // Do as much as you can
 //   1) MANDATORY: complete the hash table code
@@ -62,7 +63,7 @@ typedef struct hash_table_s      hash_table_t;
 
 struct adjacency_node_s
 {
-  adjacency_node_t *next;            // link to th enext adjacency list node
+  adjacency_node_t *next;            // link to the next adjacency list node
   hash_table_node_t *vertex;         // the other vertex
 };
 
@@ -188,6 +189,10 @@ static void hash_table_free(hash_table_t *hash_table)
   //
   // complete this
   //
+  if(hash_table == NULL){
+    printf("hash_table_free: no hash table has been created\n");
+    exit(1);
+  }
   free(hash_table);
 }
 
