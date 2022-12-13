@@ -135,7 +135,7 @@ static void free_hash_table_node(hash_table_node_t *node)
 // hash table stuff (mostly to be done)
 //
 
-unsigned int crc32(const char *str)
+unsigned int crc32(const char *str)  // CRC-32 (Cyclic Redundancy Check)
 {
   static unsigned int table[256];
   unsigned int crc;
