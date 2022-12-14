@@ -523,7 +523,10 @@ static void print_hash_table(hash_table_t *hash_table)
       printf(" %s -> ",node->word);
       node = node->next;
     }
-    printf("\n");
+    if (hash_table->heads[i] != NULL)
+    {
+      printf("\n");
+    }
   }
 
 }
