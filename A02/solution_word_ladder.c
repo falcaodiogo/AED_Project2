@@ -269,6 +269,12 @@ static void hash_table_grow(hash_table_t *hash_table)
   hash_table->hash_table_size = hash_table->hash_table_size * 2; // Double the hash table size
   hash_table->heads = (hash_table_node_t **)malloc(hash_table->hash_table_size * sizeof(hash_table_node_t *)); // Allocate memory for the heads of the hash table
 
+  if(hash_table->heads == NULL)
+  {
+    fprintf(stderr,"hash_table_grow: out of memory\n");
+    exit(1);
+  }
+
   for(unsigned int i = 0; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
   {
     hash_table->heads[i] = NULL;
@@ -306,17 +312,26 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
   { 
     if(strcmp(node->word, word) == 0) // If the word is found
     { 
-      return node;  // Return the node
+      return node; // Return the pointer to node
     }
     node = node->next;  // Set the node to the next node
-  }
+  } 
   if(insert_if_not_found == 1) // If the word is not found
   { 
+    
+    // if the word size is greater than the maximum word size
+    if(strlen(word) > _max_word_size_)
+    {
+      fprintf(stderr," the word size %s is greater than the maximum word size\n",word);
+      exit(1);
+    }
+
     node = allocate_hash_table_node();  // Allocate a new node
+
     strcpy(node->word,word);  // Copy the word into the node
     node->next = hash_table->heads[i];  // Set the next node to the head of the hash table
     hash_table->heads[i] = node;  // Set the head of the hash table to the node
-    hash_table->number_of_entries++;  // Increment the number of words
+    hash_table->number_of_entries++;  
     
     if(hash_table->number_of_entries > hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
     {  
@@ -340,6 +355,22 @@ static hash_table_node_t *find_representative(hash_table_node_t *node)
   //
   // complete this
   //
+
+  // ---------------------------------------------------------------
+  representative = node; // Set the representative to the node
+  while(representative->representative != NULL)
+  { 
+    representative = representative->representative; // Set the representative to the next representative
+  }
+
+  while(node->representative != NULL)
+  { 
+    next_node = node->representative; // Set the next node to the next representative
+    node->representative = representative; // Set the representative to the representative
+    node = next_node; // Set the node to the next node
+  }
+  // ---------------------------------------------------------------
+
   
   return representative;
 }
@@ -352,7 +383,7 @@ static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char
   to = find_word(hash_table,word,0);
   //
   // complete this
-  //
+  //  
    
 }
 
@@ -450,10 +481,9 @@ static void similar_words(hash_table_t *hash_table,hash_table_node_t *from)
 
 static int breadh_first_search(int maximum_number_of_vertices,hash_table_node_t **list_of_vertices,hash_table_node_t *origin,hash_table_node_t *goal)
 {
-  //
-  // complete this
-  //
-  return -1;
+  int i,j;
+  hash_table_node_t *node;
+  
 }
 
 
@@ -515,8 +545,10 @@ static void print_hash_table(hash_table_t *hash_table)
 {
   hash_table_node_t *node;
   int i;
+  int count = 0;
   for(i = 0;i < hash_table->hash_table_size;i++)
   {
+    // printf("%d: ",count++);
     node = hash_table->heads[i];
     while(node != NULL)
     {
