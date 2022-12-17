@@ -355,15 +355,14 @@ static hash_table_node_t *find_representative(hash_table_node_t *node)
   //
   // complete this
   //
-
   // ---------------------------------------------------------------
   representative = node; // Set the representative to the node
-  while(representative->representative != NULL)
+  while(representative->representative != NULL) // Loop through the representatives
   { 
     representative = representative->representative; // Set the representative to the next representative
   }
 
-  while(node->representative != NULL)
+  while(node->representative != NULL) // Loop through the representatives
   { 
     next_node = node->representative; // Set the next node to the next representative
     node->representative = representative; // Set the representative to the representative
@@ -375,15 +374,37 @@ static hash_table_node_t *find_representative(hash_table_node_t *node)
   return representative;
 }
 
-static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char *word)
+static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char *word) // Add an edge to the graph
 {
   hash_table_node_t *to,*from_representative,*to_representative;
   adjacency_node_t *link;
 
   to = find_word(hash_table,word,0);
+
+
   //
   // complete this
-  //  
+  //
+
+  // ---------------------------------------------------------------
+  if(to != NULL) // If the word is found
+  { 
+    from_representative = find_representative(from); // Set the from representative to the representative of the from node
+    to_representative = find_representative(to); // Set the to representative to the representative of the to node
+
+    if(from_representative != to_representative) // If the from representative is not the same as the to representative
+    { 
+      link = allocate_adjacency_node(); // Allocate a new adjacency node
+      link->vertex = to_representative; // Set the vertex to the to representative
+      link->next = from_representative->head; // Set the next link to the head of the from representative
+      from_representative->head = link; // Set the head of the from representative to the link
+
+      to_representative->representative = from_representative; // Set the representative of the to representative to the from representative
+
+      from_representative->number_of_edges++; // Increment the number of edges
+    }
+  }
+  
    
 }
 
@@ -481,9 +502,11 @@ static void similar_words(hash_table_t *hash_table,hash_table_node_t *from)
 
 static int breadh_first_search(int maximum_number_of_vertices,hash_table_node_t **list_of_vertices,hash_table_node_t *origin,hash_table_node_t *goal)
 {
-  int i,j;
-  hash_table_node_t *node;
-  
+  //
+  // complete this
+  //
+
+  return -1;
 }
 
 
@@ -540,27 +563,27 @@ static void graph_info(hash_table_t *hash_table)
   //
 }
 
-//print hash_table
+//print hash_table with the enumeration of all linked list nodes
 static void print_hash_table(hash_table_t *hash_table)
 {
   hash_table_node_t *node;
   int i;
   int count = 0;
+
   for(i = 0;i < hash_table->hash_table_size;i++)
   {
-    // printf("%d: ",count++);
     node = hash_table->heads[i];
     while(node != NULL)
     {
-      printf(" %s -> ",node->word);
+      printf(" [%d]: %s -> ",++count,node->word);
       node = node->next;
     }
     if (hash_table->heads[i] != NULL)
     {
       printf("\n");
+      continue;
     }
   }
-
 }
 
 //
