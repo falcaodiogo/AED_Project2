@@ -240,7 +240,7 @@ static void hash_table_grow(hash_table_t *hash_table)
   {
     new_heads[i] = NULL;
   }
-  printf("Bacalhau quer alho");
+
   for(i = 0 ; i < old_size ; i++) 
   {
     node = hash_table->heads[i];
@@ -263,7 +263,7 @@ static void hash_table_grow(hash_table_t *hash_table)
       node = next_node;
     }
   }
-  printf("Bacalhau");
+  printf("Bacalhau\n");
   free(hash_table->heads); // Free the old heads prevenir o overlay de mallocs
   hash_table->heads = new_heads;
   // ---------------------------------------------------------------
@@ -280,7 +280,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
   //
 
   // ---------------------------------------------------------------
-  printf("Here\n");
+  
   node = hash_table->heads[i]; 
   while(node != NULL)
   { 
@@ -290,7 +290,6 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     }
     node = node->next;
   } 
-  printf("Here\n");
 
   if(insert_if_not_found == 1) // If the word is not found
   { 
@@ -327,8 +326,11 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     
     if(hash_table->number_of_entries > hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
     {  
-      hash_table_grow(hash_table); 
+      printf("Bacalhau2\n"); 
+      hash_table_grow(hash_table);
+      printf("Bacalhau3\n"); 
     }
+    printf("%d\n",hash_table->number_of_entries);
   }
   // ---------------------------------------------------------------
   return node;
@@ -534,7 +536,6 @@ static void print_hash_table(hash_table_t *hash_table)
     if (hash_table->heads[i] != NULL)
     {
       printf("\n");
-      continue;
     }
   }
 }
@@ -554,7 +555,7 @@ int main(int argc,char **argv)
 
   // initialize hash table
   hash_table = hash_table_create();
-  printf("Here\n");
+  
   // read words
   fp = fopen((argc < 2) ? "wordlist-big-latest.txt" : argv[1],"rb");
   if(fp == NULL)
@@ -562,11 +563,9 @@ int main(int argc,char **argv)
     fprintf(stderr,"main: unable to open the words file\n");
     exit(1);
   }
-  printf("Here\n");
   while(fscanf(fp,"%99s",word) == 1)
     (void)find_word(hash_table,word,1);
   fclose(fp);
-  printf("Here\n");
   // find all similar words
   for(i = 0u;i < hash_table->hash_table_size;i++)
     for(node = hash_table->heads[i];node != NULL;node = node->next)
