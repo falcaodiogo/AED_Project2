@@ -228,7 +228,7 @@ static void hash_table_grow(hash_table_t *hash_table)
   //
 
   // ---------------------------------------------------------------
-  hash_table_node_t *next_node, *node, *final_node;
+  hash_table_node_t *next_node, *node, *first_node;
   unsigned int i, new_index,old_size; 
 
   old_size = hash_table->hash_table_size; 
@@ -238,9 +238,9 @@ static void hash_table_grow(hash_table_t *hash_table)
 
   for(i = 0; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
   {
-    hash_table->heads[i] = NULL;
+    new_heads[i] = NULL;
   }
-
+  printf("Bacalhau quer alho");
   for(i = 0 ; i < old_size ; i++) 
   {
     node = hash_table->heads[i];
@@ -256,16 +256,14 @@ static void hash_table_grow(hash_table_t *hash_table)
       }
       else // If the new index is not empty
       {
-        final_node = new_heads[new_index];
-        while(final_node->next != NULL) // While the next node is not NULL
-        {
-          final_node = final_node->next; 
-        }
-        final_node->next = node;
+        first_node = new_heads[new_index];
+        node->next = first_node;
+        new_heads[new_index] = node;
       }
       node = next_node;
     }
   }
+  printf("Bacalhau");
   free(hash_table->heads); // Free the old heads prevenir o overlay de mallocs
   hash_table->heads = new_heads;
   // ---------------------------------------------------------------
@@ -282,6 +280,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
   //
 
   // ---------------------------------------------------------------
+  printf("Here\n");
   node = hash_table->heads[i]; 
   while(node != NULL)
   { 
@@ -291,6 +290,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     }
     node = node->next;
   } 
+  printf("Here\n");
 
   if(insert_if_not_found == 1) // If the word is not found
   { 
@@ -554,6 +554,7 @@ int main(int argc,char **argv)
 
   // initialize hash table
   hash_table = hash_table_create();
+  printf("Here\n");
   // read words
   fp = fopen((argc < 2) ? "wordlist-big-latest.txt" : argv[1],"rb");
   if(fp == NULL)
@@ -561,9 +562,11 @@ int main(int argc,char **argv)
     fprintf(stderr,"main: unable to open the words file\n");
     exit(1);
   }
+  printf("Here\n");
   while(fscanf(fp,"%99s",word) == 1)
     (void)find_word(hash_table,word,1);
   fclose(fp);
+  printf("Here\n");
   // find all similar words
   for(i = 0u;i < hash_table->hash_table_size;i++)
     for(node = hash_table->heads[i];node != NULL;node = node->next)
