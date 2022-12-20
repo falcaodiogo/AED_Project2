@@ -177,10 +177,16 @@ static hash_table_t *hash_table_create(void)
   //
 
   // ---------------------------------------------------------------
-  hash_table->hash_table_size = 100; // Set the hash table size to 100
-  hash_table->number_of_entries = 0; // Set the number of entries to 0
-  hash_table->number_of_edges = 0; // Set the number of edges to 0
+  hash_table->hash_table_size = 100;
+  hash_table->number_of_entries = 0;
+  hash_table->number_of_edges = 0; 
   hash_table->heads = (hash_table_node_t **)malloc(hash_table->hash_table_size * sizeof(hash_table_node_t *)); // Allocate memory for the heads of the hash table
+
+  if(hash_table->heads == NULL)
+  {
+    fprintf(stderr,"create_hash_table: out of memory\n");
+    exit(1);
+  }
   
   for(i = 0; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
   {
@@ -200,12 +206,12 @@ static void hash_table_free(hash_table_t *hash_table)
   //
   // complete this
   //
-
+  unsigned int i;
   // ---------------------------------------------------------------
-  hash_table_node_t *node;  // Create a node
-  hash_table_node_t *next_node; // Create the next node
+  hash_table_node_t *node; 
+  hash_table_node_t *next_node;
 
-  for(unsigned int i = 0; i < hash_table->hash_table_size; i++) // Loop through the hash table
+  for(i = 0; i < hash_table->hash_table_size; i++) // Loop through the hash table
   { 
     node = hash_table->heads[i];
 
@@ -263,9 +269,9 @@ static void hash_table_grow(hash_table_t *hash_table)
       node = next_node;
     }
   }
-  printf("Bacalhau\n");
-  free(hash_table->heads); // Free the old heads prevenir o overlay de mallocs
+  free(hash_table->heads); // Free the old heads 
   hash_table->heads = new_heads;
+  printf("hash table grew from %d to %d\n",old_size,hash_table->hash_table_size);
   // ---------------------------------------------------------------
 }
 
@@ -313,9 +319,9 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     else
     {
       node = hash_table->heads[i];
-      while(node->next != NULL)
+      while(node->next != NULL) 
       {
-        node = node->next;
+        node = node->next; 
       }
 
       new_node = allocate_hash_table_node(); // Allocate a new node
@@ -326,9 +332,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     
     if(hash_table->number_of_entries > hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
     {  
-      printf("Bacalhau2\n"); 
       hash_table_grow(hash_table);
-      printf("Bacalhau3\n"); 
     }
     printf("%d\n",hash_table->number_of_entries);
   }
@@ -343,7 +347,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
 
 static hash_table_node_t *find_representative(hash_table_node_t *node)
 {
-  hash_table_node_t *representative,*next_node;
+  // hash_table_node_t *representative,*next_node;
 
   //
   // complete this
@@ -355,9 +359,6 @@ static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char
 {
   hash_table_node_t *to,*from_representative,*to_representative;
   adjacency_node_t *link;
-
-  to = find_word(hash_table,word,0);
-
 
   //
   // complete this
