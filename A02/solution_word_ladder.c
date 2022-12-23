@@ -234,8 +234,7 @@ static void hash_table_grow(hash_table_t *hash_table)
   //
 
   // ---------------------------------------------------------------
-  hash_table_node_t *next_node, *first_node;
-  hash_table_node_t *node = NULL;
+  hash_table_node_t *next_node, *first_node, *node;
   unsigned int i, old_size; 
 
   old_size = hash_table->hash_table_size; 
@@ -350,7 +349,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
 
 static hash_table_node_t *find_representative(hash_table_node_t *node)
 {
-  // hash_table_node_t *representative,*next_node;
+  hash_table_node_t *representative,*next_node;
 
   //
   // complete this
