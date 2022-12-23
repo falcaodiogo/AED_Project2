@@ -188,7 +188,7 @@ static hash_table_t *hash_table_create(void)
     exit(1);
   }
   
-  for(i = 0; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
+  for(i = 0u; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
   {
     hash_table->heads[i] = NULL;
   }
@@ -208,10 +208,10 @@ static void hash_table_free(hash_table_t *hash_table)
   //
   unsigned int i;
   // ---------------------------------------------------------------
-  hash_table_node_t *node; 
+  hash_table_node_t *node = NULL; 
   hash_table_node_t *next_node;
 
-  for(i = 0; i < hash_table->hash_table_size; i++) // Loop through the hash table
+  for(i = 0u; i < hash_table->hash_table_size; i++) // Loop through the hash table
   { 
     node = hash_table->heads[i];
 
@@ -222,9 +222,9 @@ static void hash_table_free(hash_table_t *hash_table)
       node = next_node;
     }
   }
-  // ---------------------------------------------------------------
   free(hash_table->heads);
   free(hash_table);
+  // ---------------------------------------------------------------
 }
 
 static void hash_table_grow(hash_table_t *hash_table)
@@ -234,27 +234,29 @@ static void hash_table_grow(hash_table_t *hash_table)
   //
 
   // ---------------------------------------------------------------
-  hash_table_node_t *next_node, *node, *first_node;
-  unsigned int i, new_index,old_size; 
+  hash_table_node_t *next_node, *first_node;
+  hash_table_node_t *node = NULL;
+  unsigned int i, old_size; 
 
   old_size = hash_table->hash_table_size; 
-  hash_table->hash_table_size = hash_table->hash_table_size * 2; // Double the size of the hash table
-  
-  hash_table_node_t **new_heads = (hash_table_node_t **)malloc(hash_table->hash_table_size * sizeof(hash_table_node_t *)); // Allocate memory for the new heads
+  hash_table->hash_table_size = hash_table->hash_table_size * 2u; // Double the size of the hash table
 
-  for(i = 0; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
+  
+  hash_table_node_t **new_heads = (hash_table_node_t **)malloc(hash_table->hash_table_size * sizeof(hash_table_node_t *)); 
+
+  for(i = 0u; i < hash_table->hash_table_size; i++) // Set all the heads to NULL
   {
     new_heads[i] = NULL;
   }
 
-  for(i = 0 ; i < old_size ; i++) 
+  for(i = 0u ; i < old_size ; i++) 
   {
     node = hash_table->heads[i];
     while (node != NULL)
     {
       next_node = node->next;
       node->next = NULL; // Set the next node to NULL
-      new_index = crc32(node->word) % hash_table->hash_table_size; // Get the new index
+      size_t new_index = crc32(node->word) % hash_table->hash_table_size; // Get the new index
 
       if(new_heads[new_index] == NULL) // If the new index is empty
       {
@@ -311,7 +313,7 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     if (hash_table->heads[i] == NULL)
     {
       hash_table->heads[i] = node;
-      strcpy(node->word,word);  // Copy the word into the node
+      strncpy(node->word,word,_max_word_size_);  // Copy the word into the node
       node->next = NULL;
       hash_table->number_of_entries++;
       return node;
@@ -325,19 +327,20 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
       }
 
       new_node = allocate_hash_table_node(); // Allocate a new node
-      strcpy(new_node->word, word); // Set the word of the node to the word
+      strncpy(new_node->word, word,_max_word_size_); // Set the word of the node to the word
       node->next = new_node; // Set the next node to the new node
       hash_table->number_of_entries++; // Increment the number of entries in the hash table
     }
     
-    if(hash_table->number_of_entries > hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
+    if(hash_table->number_of_entries > 0.75 * hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
     {  
       hash_table_grow(hash_table);
     }
     printf("%d\n",hash_table->number_of_entries);
+    return node;
   }
   // ---------------------------------------------------------------
-  return node;
+  return NULL;
 }
 
 
@@ -523,10 +526,10 @@ static void graph_info(hash_table_t *hash_table)
 //print hash_table with the enumeration of all linked list nodes
 static void print_hash_table(hash_table_t *hash_table)
 {
-  hash_table_node_t *node;
+  hash_table_node_t *node = NULL;
   unsigned int i;
 
-  for(i = 0;i < hash_table->hash_table_size;i++)
+  for(i = 0u;i < hash_table->hash_table_size;i++)
   {
     node = hash_table->heads[i];
     while(node != NULL)
@@ -549,14 +552,14 @@ int main(int argc,char **argv)
 {
   char word[100],from[100],to[100];
   hash_table_t *hash_table;
-  hash_table_node_t *node;
-  unsigned int i;
+  hash_table_node_t *node = NULL;
+  unsigned int i = 0u;
   int command;
   FILE *fp;
 
   // initialize hash table
   hash_table = hash_table_create();
-  
+  printf("Hash table created successfully\n");
   // read words
   fp = fopen((argc < 2) ? "wordlist-big-latest.txt" : argv[1],"rb");
   if(fp == NULL)
@@ -564,16 +567,18 @@ int main(int argc,char **argv)
     fprintf(stderr,"main: unable to open the words file\n");
     exit(1);
   }
+  printf("File opened successfully\n");
   while(fscanf(fp,"%99s",word) == 1)
     (void)find_word(hash_table,word,1);
   fclose(fp);
+  printf("HAsh table filled successfully\n");
+  print_hash_table(hash_table);
   // find all similar words
   for(i = 0u;i < hash_table->hash_table_size;i++)
     for(node = hash_table->heads[i];node != NULL;node = node->next)
       similar_words(hash_table,node);
   graph_info(hash_table);
   // ask what to do
-  print_hash_table(hash_table);
   for(;;)
   {
     fprintf(stderr,"Your wish is my command:\n");
