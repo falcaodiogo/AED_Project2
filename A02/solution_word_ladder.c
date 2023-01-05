@@ -234,6 +234,11 @@ static void hash_table_grow(hash_table_t *hash_table)
   //
 
   // ---------------------------------------------------------------
+  if (hash_table == NULL) { // Verify if the hash table is null
+    fprintf(stderr, "Error: Cannot grow null hash table.\n");
+    return;
+  }
+  
   hash_table_node_t *next_node, *first_node, *node;
   unsigned int i, old_size; 
 
@@ -293,10 +298,11 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
   { 
     if(strcmp(node->word, word) == 0) // If the word is found
     { 
-      return node; 
+        return node; 
     }
+    printf("word actaulized %s\n", node->word);
     node = node->next;
-  } 
+  }
 
   if(insert_if_not_found == 1) // If the word is not found
   { 
@@ -309,26 +315,20 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     }
 
     node = allocate_hash_table_node();  // Allocate a new node
+    strncpy(node->word,word,_max_word_size_);  // Copy the word into the node
+    node->next = NULL;
+
     if (hash_table->heads[i] == NULL)
     {
       hash_table->heads[i] = node;
-      strncpy(node->word,word,_max_word_size_);  // Copy the word into the node
-      node->next = NULL;
       hash_table->number_of_entries++;
-      return node;
     }
     else
     {
-      node = hash_table->heads[i];
-      while(node->next != NULL) 
-      {
-        node = node->next; 
-      }
-
-      new_node = allocate_hash_table_node(); // Allocate a new node
-      strncpy(new_node->word, word,_max_word_size_); // Set the word of the node to the word
-      node->next = new_node; // Set the next node to the new node
+      node->next = hash_table->heads[i]; // Set the next node to the new node
+      hash_table->heads[i] = node;
       hash_table->number_of_entries++; // Increment the number of entries in the hash table
+
     }
     
     if(hash_table->number_of_entries > 0.75 * hash_table->hash_table_size) // If the number of words is greater than the size of the hash table
