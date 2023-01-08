@@ -300,7 +300,6 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     { 
         return node; 
     }
-    printf("word actaulized %s\n", node->word);
     node = node->next;
   }
 
@@ -527,20 +526,22 @@ static void print_hash_table(hash_table_t *hash_table)
 {
   hash_table_node_t *node = NULL;
   unsigned int i;
+  unsigned int count;
+  FILE *fp;
+  fp = fopen("big_letters.txt", "a");
 
   for(i = 0u;i < hash_table->hash_table_size;i++)
   {
+    count = 1u;
     node = hash_table->heads[i];
     while(node != NULL)
     {
-      printf("%s -> ",node->word);
       node = node->next;
+      count += 1u;
     }
-    if (hash_table->heads[i] != NULL)
-    {
-      printf("\n");
-    }
+    fprintf(fp,"%d, ",count);
   }
+  fclose(fp);
 }
 
 //
