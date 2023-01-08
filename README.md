@@ -7,7 +7,7 @@ Trabalho realizado por:
 
 Nota: Ainda não foi atribuída
 
-## Instruções de compilação
+## Instruções de compilação e execução
 Dentro da pasta A02, compilar com o comando:
 ```
 make solution_word_ladder
