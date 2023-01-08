@@ -334,7 +334,6 @@ static hash_table_node_t *find_word(hash_table_t *hash_table,const char *word,in
     {  
       hash_table_grow(hash_table);
     }
-    printf("%d\n",hash_table->number_of_entries);
     return node;
   }
   // ---------------------------------------------------------------
@@ -569,7 +568,7 @@ int main(int argc,char **argv)
   while(fscanf(fp,"%99s",word) == 1)
     (void)find_word(hash_table,word,1);
   fclose(fp);
-  printf("HAsh table filled successfully\n");
+  printf("Hash table filled successfully\n");
   print_hash_table(hash_table);
   // find all similar words
   for(i = 0u;i < hash_table->hash_table_size;i++)
