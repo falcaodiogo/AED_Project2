@@ -365,7 +365,6 @@ static void add_edge(hash_table_t *hash_table,hash_table_node_t *from,const char
   //   
 }
 
-
 //
 // generates a list of similar words and calls the function add_edge for each one (done)
 //
@@ -466,7 +465,6 @@ static int breadh_first_search(int maximum_number_of_vertices,hash_table_node_t 
   return -1;
 }
 
-
 //
 // list all vertices belonging to a connected component (complete this)
 //
@@ -477,7 +475,6 @@ static void list_connected_component(hash_table_t *hash_table,const char *word)
   // complete this
   //
 }
-
 
 //
 // compute the diameter of a connected component (optional)
@@ -496,7 +493,6 @@ static int connected_component_diameter(hash_table_node_t *node)
   return diameter;
 }
 
-
 //
 // find the shortest path from a given word to another given word (to be done)
 //
@@ -507,7 +503,6 @@ static void path_finder(hash_table_t *hash_table,const char *from_word,const cha
   // complete this
   //
 }
-
 
 //
 // some graph information (optional)
