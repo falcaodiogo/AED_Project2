@@ -1,5 +1,5 @@
 # AED_Project2
-## Segundo trabalho prático da cadeira de Algoritmos e Estruturas de Dados
+## Segundo Trabalho Prático da cadeira de Algoritmos e Estruturas de Dados
 
 Trabalho realizado por:
 - Diogo Falcão (Nºmec 108712)
