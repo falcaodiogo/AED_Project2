@@ -5,7 +5,7 @@ Trabalho realizado por:
 - Diogo Falcão (Nºmec 108712)
 - José Gameiro (Nºmec 108840)
 
-Nota: 2
+Nota: 12
 
 ## Instruções de compilação e execução
 Dentro da pasta A02, compilar com o comando:
